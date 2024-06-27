@@ -72,7 +72,7 @@ def save_to_json(data, output_file):
         json.dump(data, json_file, indent=4)
 
 # Specify the directory containing XPS files
-xps_directory = "/Users/manjushasinghtomar/Desktop/converttopng/checkdata"
+xps_directory = "sample data"
 # Process XPS files
 output_data = process_xps_files(xps_directory)
 # Specify the output JSON file
