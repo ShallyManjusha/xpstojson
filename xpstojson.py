@@ -1,8 +1,38 @@
 import os
+import requests
+import zipfile
 import json
 from PIL import Image
 import easyocr
 import fitz  # PyMuPDF
+
+# Prompt user to enter the URL
+wget_url = input("Enter the URL to download: ")
+
+# Create the 'data' directory if it doesn't exist
+os.makedirs('data', exist_ok=True)
+
+# Change the current working directory to 'data'
+os.chdir('data')
+
+# Get the current working directory
+CWD = os.getcwd()
+
+# Download the file from the URL
+response = requests.get(wget_url)
+file_name = wget_url.split('/')[-1] + '.xps'
+file_path = os.path.join(CWD, file_name)
+
+# Write the downloaded content to a file
+with open(file_path, 'wb') as file:
+    file.write(response.content)
+
+# Iterate through all files in the current working directory
+for file in os.listdir(CWD):
+    if file.endswith('.zip'):
+        # Unzip the file
+        with zipfile.ZipFile(file, 'r') as zip_ref:
+            zip_ref.extractall(CWD)
 
 def extract_text_from_images(images_dir):
     # Initialize EasyOCR reader
@@ -71,15 +101,16 @@ def save_to_json(data, output_file):
     with open(output_file, 'w') as json_file:
         json.dump(data, json_file, indent=4)
 
-# Specify the directory containing XPS files
-xps_directory = "sample data"
 # Process XPS files
-output_data = process_xps_files(xps_directory)
+output_data = process_xps_files(CWD)
+
 # Specify the output JSON file
-output_json_file = "output_data/output.json"
+output_json_file = "../output_data/output.json"
+
 # Ensure the output directory exists
 output_dir = os.path.dirname(output_json_file)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
+
 # Save the data to JSON file
 save_to_json(output_data, output_json_file)
