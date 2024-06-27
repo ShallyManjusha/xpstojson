@@ -76,6 +76,10 @@ xps_directory = "sample data"
 # Process XPS files
 output_data = process_xps_files(xps_directory)
 # Specify the output JSON file
-output_json_file = "output.json"
+output_json_file = "output_data/output.json"
+# Ensure the output directory exists
+output_dir = os.path.dirname(output_json_file)
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 # Save the data to JSON file
 save_to_json(output_data, output_json_file)
